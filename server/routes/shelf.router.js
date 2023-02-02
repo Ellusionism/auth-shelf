@@ -54,6 +54,30 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 });
 
 
+// router.post('/', (req, res) => {
+//   const newPlant = req.body;
+//   const queryText = `
+//     INSERT INTO plant
+//       ("name", "kingdom", "clade", "order", "family", "subfamily", "genus")
+//       VALUES
+//       ($1, $2, $3, $4, $5, $6, $7)
+//     `;
+//   const queryValues = [
+//     newPlant.name,
+//     newPlant.kingdom,
+//     newPlant.clade,
+//     newPlant.order,
+//     newPlant.family,
+//     newPlant.subfamily,
+//     newPlant.genus,
+//   ];
+//   pool.query(queryText, queryValues)
+//     .then(() => { res.sendStatus(201); })
+//     .catch((err) => {
+//       console.log('Error completing SELECT plant query', err);
+//       res.sendStatus(500);
+//     });
+// });
 
 
 /**
@@ -84,7 +108,24 @@ router.post('/', (req, res) => {
 /**
  * Delete an item if it's something the logged in user added
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', rejectUnauthenticated, (req, res) => {
+  console.log('Req.params: ', req.params.id);
+
+  const sqlQuery = `
+    DELETE FROM "item"
+    WHERE "id" = $1;
+    `;
+  pool.query(sqlQuery, [req.params.id])
+  .then((response) => {
+    console.log('NAILED IT!!!!!', response.body);
+    res.sendStatus(200);
+  })
+  .catch((error) => {
+    console.log('Error: ', error);
+    res.sendStatus(500);
+  })
+
+
   // endpoint functionality
 });
 
