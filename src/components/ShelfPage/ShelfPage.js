@@ -1,5 +1,6 @@
 import { React, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import NewItemForm from '../NewItemForm/NewItemForm';
 
 function ShelfPage() {
 
@@ -31,6 +32,7 @@ function ShelfPage() {
 
   return (
     <div className="container">
+      <NewItemForm />
       <h2>Shelf</h2>
       <ul>
         { shelf.map(item => {

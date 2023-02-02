@@ -79,11 +79,14 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 //     });
 // });
 
+
 /**
  * Add an item for the logged in user to the shelf
  */
 router.post('/', (req, res) => {
   const newItem = req.body;
+  let user_id = req.user.id;
+  console.log(req.user);
   const queryText =`
   INSERT INTO item
   ("description", "image_url", "user_id")
@@ -93,7 +96,7 @@ router.post('/', (req, res) => {
   const queryValues = [
     newItem.description,
     newItem.image_url,
-    newItem.user_id
+    user_id
   ];
   pool.query(queryText, queryValues)
     .then(() => { res.sendStatus(201); })
