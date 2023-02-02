@@ -54,36 +54,15 @@ router.get('/', rejectUnauthenticated, (req, res) => {
 });
 
 
-router.post('/', (req, res) => {
-  const newPlant = req.body;
-  const queryText = `
-    INSERT INTO plant
-      ("name", "kingdom", "clade", "order", "family", "subfamily", "genus")
-      VALUES
-      ($1, $2, $3, $4, $5, $6, $7)
-    `;
-  const queryValues = [
-    newPlant.name,
-    newPlant.kingdom,
-    newPlant.clade,
-    newPlant.order,
-    newPlant.family,
-    newPlant.subfamily,
-    newPlant.genus,
-  ];
-  pool.query(queryText, queryValues)
-    .then(() => { res.sendStatus(201); })
-    .catch((err) => {
-      console.log('Error completing SELECT plant query', err);
-      res.sendStatus(500);
-    });
-});
+
 
 /**
  * Add an item for the logged in user to the shelf
  */
 router.post('/', (req, res) => {
   const newItem = req.body;
+  let user_id = req.user.id;
+  console.log(req.user);
   const queryText =`
   INSERT INTO item
   ("description", "image_url", "user_id")
@@ -93,7 +72,7 @@ router.post('/', (req, res) => {
   const queryValues = [
     newItem.description,
     newItem.image_url,
-    newItem.user_id
+    user_id
   ];
   pool.query(queryText, queryValues)
     .then(() => { res.sendStatus(201); })
