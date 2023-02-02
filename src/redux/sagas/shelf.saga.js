@@ -24,15 +24,6 @@ function* deleteShelfItem(action) {
   }
 }
 
-function* shelfSaga() {
-  yield takeEvery('FETCH_SHELF', fetchShelf);
-
-  yield takeEvery('CREATE_ITEM', createItem)
-
-  yield takeEvery('DELETE_ITEM', deleteShelfItem);
-
-}
-
 function* createItem(action) {
   console.log('createItem action.payload:', action.payload)
   // Send the new plant (action.payload) to our server
@@ -58,6 +49,42 @@ function* createItem(action) {
     console.log('createItem fail:', error)
   }
 }
+
+function* updateItem(action) {
+  console.log('updateItem action.payload:', action.payload)
+  // Send the new plant (action.payload) to our server
+  // (POST /api/shelf)
+  try {
+    const updatedItem = action.payload // 👈 this variable will evaluate to
+                                    // something like:
+                                    // { name: 'Thing', kingdom: 'Other Thing', ...}
+    // POST the new plant object to the server:
+    const response = yield axios({
+      method: 'PUT',
+      url: `/api/shelf/${updatedItem.id}`,
+      data: updatedItem
+    })
+    
+    // Now that we've successfully added a plant to the plants table,
+    // we call the fetchPlants Saga function to bring our plantList reducer
+    // back in sync with our plants table:
+  } catch (error) {
+    console.log('updateItem fail:', error)
+  }
+}
+
+function* shelfSaga() {
+  yield takeEvery('FETCH_SHELF', fetchShelf);
+
+  yield takeEvery('CREATE_ITEM', createItem)
+
+  yield takeEvery('DELETE_ITEM', deleteShelfItem);
+
+  yield takeEvery('UPDATE_ITEM', updateItem)
+
+}
+
+
 
 export default shelfSaga;
 
