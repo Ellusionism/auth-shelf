@@ -39,6 +39,7 @@ function ShelfPage() {
           return (
             <div key={item.id}>
             <li >{item.description}</li>
+            <img src={item.image_url} alt={item.description}/>
             <button onClick={() => deleteItem(item)}>Delete</button>
             </div>
           )
