@@ -1,8 +1,11 @@
 import { React, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import NewItemForm from '../NewItemForm/NewItemForm';
 
 function ShelfPage() {
+
+  const history = useHistory();
 
   useEffect(() => {
     dispatch({
@@ -18,6 +21,20 @@ function ShelfPage() {
         type: 'DELETE_ITEM',
         payload: item.id
       })
+    } else {
+      console.log('NOOOO! >:(');
+    }
+  }
+
+  const editItem = (item) => {
+    // console.log(user)
+
+    if (item.user_id === user.id){
+      dispatch({
+        type: 'SET_ITEM',
+        payload: item
+      })
+      history.push(`/edit/${item.id}`)
     } else {
       console.log('NOOOO! >:(');
     }
@@ -41,6 +58,7 @@ function ShelfPage() {
             <li >{item.description}</li>
             <img src={item.image_url} alt={item.description}/>
             <button onClick={() => deleteItem(item)}>Delete</button>
+            <button onClick={() => editItem(item)}>Edit</button>
             </div>
           )
         })}

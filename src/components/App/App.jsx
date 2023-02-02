@@ -19,6 +19,7 @@ import ShelfPage from '../ShelfPage/ShelfPage';
 import LandingPage from '../LandingPage/LandingPage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
+import EditItem from '../EditItem/EditItem';
 
 import './App.css';
 
@@ -109,6 +110,9 @@ function App() {
               <LandingPage />
             }
           </Route>
+          <ProtectedRoute exact path = '/edit/:id'>
+            <EditItem />
+          </ProtectedRoute>
 
           {/* If none of the other routes matched, we will show a 404. */}
           <Route>

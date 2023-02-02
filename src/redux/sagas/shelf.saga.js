@@ -24,15 +24,6 @@ function* deleteShelfItem(action) {
   }
 }
 
-function* shelfSaga() {
-  yield takeEvery('FETCH_SHELF', fetchShelf);
-
-  yield takeEvery('CREATE_ITEM', createItem)
-
-  yield takeEvery('DELETE_ITEM', deleteShelfItem);
-
-}
-
 function* createItem(action) {
   console.log('createItem action.payload:', action.payload)
   // Send the new plant (action.payload) to our server
@@ -58,6 +49,19 @@ function* createItem(action) {
     console.log('createItem fail:', error)
   }
 }
+
+function* shelfSaga() {
+  yield takeEvery('FETCH_SHELF', fetchShelf);
+
+  yield takeEvery('CREATE_ITEM', createItem)
+
+  yield takeEvery('DELETE_ITEM', deleteShelfItem);
+
+  yield takeEvery('UPDATE_ITEM', updateItem)
+
+}
+
+
 
 export default shelfSaga;
 
