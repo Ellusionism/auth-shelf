@@ -1,19 +1,105 @@
 const express = require('express');
 const pool = require('../modules/pool');
 const router = express.Router();
-
+const { rejectUnauthenticated } = require('../modules/authentication-middleware'); 
+// Not sure if I need this 
 /**
  * Get all of the items on the shelf
  */
-router.get('/', (req, res) => {
-  res.sendStatus(200); // For testing only, can be removed
+
+// router.get('/', rejectUnauthenticated, (req, res) => {
+//   let clearance_level = req.user.clearance_level;
+//   // what is the value of req.user????
+//   console.log('req.user:', req.user);
+//   if(req.user.clearance_level < 3 ){
+//     console.log('you got it adam!');
+//   }
+
+//   const sqlQuery =`
+//   SELECT * FROM "secret"
+//   WHERE "secrecy_level"<=$1
+//   ORDER BY "id";
+//   `
+
+//   const sqlValues = [clearance_level];
+
+//   pool.query(sqlQuery, sqlValues)
+
+//   // pool
+//     // .query(`SELECT * FROM "secret"
+//     // WHERE "clearance_level"=$1
+//     // ORDER BY "id";`)
+
+//     // const sqlValues = [currentUserId];
+
+//     .then((results) => res.send(results.rows))
+//     .catch((error) => {
+//       console.log('Error making SELECT for secrets:', error);
+//       res.sendStatus(500);
+//     });
+// });
+
+router.get('/', rejectUnauthenticated, (req, res) => {
+  console.log('req.user:', req.user);
+  const sqlQuery =`
+  SELECT * FROM "item";
+  `
+  pool.query(sqlQuery)
+
+  .then((results) => res.send(results.rows))
+  .catch((error => {
+    console.log('Error making GET for item:', error);
+    res.sendStatus(500);
+  }))
+});
+
+
+router.post('/', (req, res) => {
+  const newPlant = req.body;
+  const queryText = `
+    INSERT INTO plant
+      ("name", "kingdom", "clade", "order", "family", "subfamily", "genus")
+      VALUES
+      ($1, $2, $3, $4, $5, $6, $7)
+    `;
+  const queryValues = [
+    newPlant.name,
+    newPlant.kingdom,
+    newPlant.clade,
+    newPlant.order,
+    newPlant.family,
+    newPlant.subfamily,
+    newPlant.genus,
+  ];
+  pool.query(queryText, queryValues)
+    .then(() => { res.sendStatus(201); })
+    .catch((err) => {
+      console.log('Error completing SELECT plant query', err);
+      res.sendStatus(500);
+    });
 });
 
 /**
  * Add an item for the logged in user to the shelf
  */
 router.post('/', (req, res) => {
-  // endpoint functionality
+  const newItem = req.body;
+  const queryText =`
+  INSERT INTO item
+  ("description", "image_url", "user_id")
+  VALUES
+  ($1, $2, $3)
+  `
+  const queryValues = [
+    newItem.description,
+    newItem.image_url,
+    newItem.user_id
+  ];
+  pool.query(queryText, queryValues)
+    .then(() => { res.sendStatus(201); })
+    .catch((err) => {
+      console.log('Error', err)
+    })
 });
 
 /**
