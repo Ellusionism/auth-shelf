@@ -9,11 +9,25 @@ function ShelfPage() {
     });
   }, []);
 
+  const deleteItem = (item) => {
+    // console.log(user)
+
+    if (item.user_id === user.id){
+      dispatch({
+        type: 'DELETE_ITEM',
+        payload: item.id
+      })
+    } else {
+      console.log('NOOOO! >:(');
+    }
+  }
+
   const dispatch = useDispatch();
-
   const shelf = useSelector(store => store.shelf);
+  const user = useSelector(store => store.user);
 
-  console.log(shelf);
+
+  // console.log(shelf);
 
   return (
     <div className="container">
@@ -21,7 +35,10 @@ function ShelfPage() {
       <ul>
         { shelf.map(item => {
           return (
-            <li>{item.description}</li>
+            <div key={item.id}>
+            <li >{item.description}</li>
+            <button onClick={() => deleteItem(item)}>Delete</button>
+            </div>
           )
         })}
       </ul>
